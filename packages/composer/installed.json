@@ -1,0 +1,70 @@
+[
+    {
+        "name": "pagekit/blog",
+        "version": "1.0.7",
+        "version_normalized": "1.0.7.0",
+        "dist": {
+            "type": "zip",
+            "url": "https://pagekit.com/package/pagekit/blog/1.0.7.zip",
+            "reference": null,
+            "shasum": "690786ff41645c25d7c180a3781ddc51205bb0ad"
+        },
+        "archive": {
+            "exclude": [
+                "node_modules",
+                "!/app"
+            ]
+        },
+        "type": "pagekit-extension",
+        "extra": {
+            "icon": "icon.svg",
+            "scripts": "scripts.php"
+        },
+        "installation-source": "dist",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Pagekit",
+                "email": "info@pagekit.com",
+                "homepage": "http://pagekit.com"
+            }
+        ],
+        "description": "A blog extensions with a built-in comment system."
+    },
+    {
+        "name": "pagekit/theme-one",
+        "version": "1.0.1",
+        "version_normalized": "1.0.1.0",
+        "dist": {
+            "type": "zip",
+            "url": "https://pagekit.com/package/pagekit/theme-one/1.0.1.zip",
+            "reference": null,
+            "shasum": "2acaae7558661bdf71b7cea03055069d02e8d47c"
+        },
+        "archive": {
+            "exclude": [
+                "!/app",
+                "!/css",
+                "/app/assets"
+            ]
+        },
+        "type": "pagekit-theme",
+        "extra": {
+            "image": "image.jpg"
+        },
+        "installation-source": "dist",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Pagekit",
+                "email": "info@pagekit.com",
+                "homepage": "http://pagekit.com"
+            }
+        ],
+        "description": "Pagekit's default theme."
+    }
+]
