@@ -84,11 +84,11 @@ export default function (Vue) {
                 each(config, (field, name) => {
 
                     if (!isString(field.name) && !arr) {
-                        field.name = name;
+                        field = assign({name}, field);
                     }
 
                     if (!isString(field.type)) {
-                        field.type = 'text';
+                        field = assign({type: 'text'}, field);
                     }
 
                     if (isString(field.name)) {
@@ -110,12 +110,17 @@ export default function (Vue) {
 
                 data = data || this.values;
 
-                var comp = new Vue({data});
-                var result = comp.$eval(expr);
+                if (isString(expr)) {
 
-                comp.$destroy();
+                    var comp = new Vue({data});
+                    var result = comp.$eval(expr);
 
-                return result;
+                    comp.$destroy();
+
+                    return result;
+                }
+
+                return expr.call(this, data, this);
             }
 
         },

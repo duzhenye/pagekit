@@ -59,7 +59,7 @@ global.angular = {
         });
 
         if (file) {
-            value.TIMESPAN_FORMATS = (new (require(file)).TimespanFormatter).patterns;
+            value.TIMESPAN_FORMATS = (require(file).TimespanFormatter).patterns;
             value.TIMESPAN_FORMATS.localeID = id;
         }
 

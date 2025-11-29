@@ -12,23 +12,23 @@
         }
     ],
     "require": {
-        "php": ">=5.5.9",
-        "composer/composer": "dev-master#7a9eb02190d334513e99a479510f87eed18cf958",
-        "doctrine/annotations": "~1.2.3",
-        "doctrine/dbal": "~2.5.1",
-        "ircmaxell/random-lib": "~1.0.0",
-        "maximebf/debugbar": "~1.11.0",
-        "monolog/monolog": "~1.13",
-        "nikic/php-parser": "~2.0.0",
-        "psr/log": "~1.0.0",
-        "swiftmailer/swiftmailer": "~5.4.5",
-        "symfony/debug": "~3.0.0",
-        "symfony/finder": "~3.0.0",
-        "symfony/http-foundation": "~3.0.0",
-        "symfony/routing": "~3.0.0",
-        "symfony/stopwatch": "~3.0.0",
-        "symfony/templating": "~3.0.0",
-        "symfony/translation": "~3.0.0",
+        "php": ">=7.4",
+        "composer/composer": "^1.10.27",
+        "doctrine/annotations": "^1.2.3",
+        "doctrine/dbal": "~2.5.13",
+        "ircmaxell/random-lib": "^1.0.0",
+        "maximebf/debugbar": "^1.11.0",
+        "monolog/monolog": "^1.13",
+        "nikic/php-parser": "^2.0.0",
+        "psr/log": "^1.1.4",
+        "swiftmailer/swiftmailer": "^5.4.5",
+        "symfony/debug": "^3.0.0",
+        "symfony/finder": "^3.0.0",
+        "symfony/http-foundation": "^3.0.0",
+        "symfony/routing": "^3.0.0",
+        "symfony/stopwatch": "^3.0.0",
+        "symfony/templating": "^3.0.0",
+        "symfony/translation": "^3.0.0",
         "twig/twig": "^1.22"
     },
     "require-dev": {
@@ -45,6 +45,9 @@
         }
     },
     "config": {
-        "vendor-dir": "app/vendor"
+        "vendor-dir": "app/vendor",
+        "audit": {
+            "block-insecure": false
+        }
     }
 }

@@ -1,61 +1,89 @@
-var fs = require('fs');
-var rollup = require('rollup');
-var uglify = require('uglify-js');
-var babel = require('rollup-plugin-babel');
-var json = require('rollup-plugin-json');
-var package = require('./package.json');
-var version = process.env.VERSION || package.version;
-var banner =
+const fs = require('fs');
+const {resolve} = require('path');
+const rollup = require('rollup');
+const uglify = require('uglify-js');
+const json = require('@rollup/plugin-json');
+const {babel} = require('@rollup/plugin-babel');
+const {promisify} = require('util');
+const package = require('./package.json');
+const version = process.env.VERSION || package.version;
+const banner =
     "/*!\n" +
     " * vue-intl v" + version + "\n" +
     " * Released under the MIT License.\n" +
     " */\n";
 
-rollup.rollup({
-  entry: 'src/index.js',
-  plugins: [
-    json(),
-    babel({ presets: ['es2015-rollup'] })
-  ]
-})
-.then(function (bundle) {
-  return write('dist/vue-intl.js', bundle.generate({
-    format: 'umd',
-    banner: banner,
-    moduleName: 'VueIntl'
-  }).code, bundle);
-})
-.then(function (bundle) {
-  return write('dist/vue-intl.min.js',
-    banner + '\n' + uglify.minify('dist/vue-intl.js').code,
-  bundle);
-})
-.then(function (bundle) {
-  return write('dist/vue-intl.common.js', bundle.generate({
-    format: 'cjs',
-    banner: banner
-  }).code, bundle);
-})
-.catch(logError);
+const readFile = promisify(fs.readFile);
+const read = async function (file, cb) {
 
-function write(dest, code, bundle) {
-  return new Promise(function (resolve, reject) {
-    fs.writeFile(dest, code, function (err) {
-      if (err) return reject(err);
-      console.log(blue(dest) + ' ' + getSize(code));
-      resolve(bundle);
+    const data = await readFile(file, 'utf8');
+    cb && cb(data);
+    return data;
+
+};
+
+const logFile = async function (file) {
+    const data = await read(file);
+    console.log(`${cyan(file)} ${getSize(data)}`);
+};
+
+const writeFile = promisify(fs.writeFile);
+const write = async function (dest, data) {
+
+     const err = await writeFile(dest, data);
+
+     if (err) {
+        console.log(err);
+        throw err;
+    }
+
+     logFile(dest);
+
+     return dest;
+
+};
+
+run().catch(({message}) => {
+	console.error(message);
+	process.exitCode = 1;
+});
+
+async function run() {
+    const files = [{
+        name: 'vue-intl',
+        configs: [{ format: 'umd', banner, name: 'VueIntl', sourcemap: false  }, { format: 'cjs', banner }],
+        minify: true
+    }];
+
+	return Promise.all(files.map(async (file) => {
+		let { name, configs, minify } = file;
+		return compile('src/index.js', `dist/${name}`, { configs, minify: !!minify })
+	}));
+};
+
+async function compile (file, dest, {name, configs, minify = true}) {
+	name = (name || '').replace(/[^\w]/g, '_');
+
+    const bundle = await rollup.rollup({
+        input: resolve(file),
+        plugins: [json(), babel({ exclude: 'node_modules/**', babelHelpers: 'bundled' })]
     });
-  });
+
+    return configs.map(async (config) => {
+        let {output: [{code, map}]} = await bundle.generate(config);
+        code = code.replace(/(>)\\n\s+|\\n\s+(<)/g, '$1 $2');
+
+        return [
+            config.format === 'umd' ? [write(`${dest}.js`, code), minify ? write(`${dest}.min.js`, uglify.minify(code, {output: {preamble: banner}}).code) : null] : null,
+            config.format === 'cjs' ? write(`${dest}.common.js`, code) : null
+        ];
+    });
 }
 
-function getSize(code) {
-  return (code.length / 1024).toFixed(2) + 'kb';
+function cyan(str) {
+    return `\x1b[1m\x1b[36m${str}\x1b[39m\x1b[22m`;
 }
 
-function logError(e) {
-  console.log(e);
-}
-
-function blue(str) {
-  return '\x1b[1m\x1b[34m' + str + '\x1b[39m\x1b[22m';
+function getSize(data) {
+    return `${(data.length / 1024).toFixed(2)}kb`;
 }

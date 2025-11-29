@@ -78,7 +78,6 @@ class BuildCommand extends Command
             $zip->addFile($file->getPathname(), $file->getRelativePathname());
         }
 
-        $zip->addFile("{$path}/.bowerrc", '.bowerrc');
         $zip->addFile("{$path}/.htaccess", '.htaccess');
 
         $zip->addEmptyDir('tmp/');
